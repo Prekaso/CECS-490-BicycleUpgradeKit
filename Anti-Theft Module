@@ -1,0 +1,54 @@
+/**
+ * Complete project details at https://RandomNerdTutorials.com/arduino-load-cell-hx711/
+ *
+ * HX711 library for Arduino - example file
+ * https://github.com/bogde/HX711
+ *
+ * MIT License
+ * (c) 2018 Bogdan Necula
+ *
+**/
+
+#include <Arduino.h>
+#include "HX711.h"
+
+// HX711 circuit wiring
+const int LOADCELL_DOUT_PIN = 2;
+const int LOADCELL_SCK_PIN = 3;
+const int LOCK = 4;
+
+HX711 scale;
+
+void setup() {
+  Serial.begin(57600);
+  Serial.println("Initializing the scale");
+
+  // Latch lock setup
+  digitalWrite(LOCK, LOW);
+  pinMode(LOCK, OUTPUT);
+
+  scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
+            
+  scale.set_scale(488.44);
+  //scale.set_scale(-471.497);                      // this value is obtained by calibrating the scale with known weights; see the README for details
+  scale.tare();               // reset the scale to 0
+
+  Serial.println("Readings:");
+}
+
+void loop() {
+  Serial.print("one reading:\t");
+  Serial.print(scale.get_units(), 1);
+  Serial.print("\t| average:\t");
+  Serial.println(scale.get_units(10), 5);
+
+  if (scale.get_units() > 200) {
+    digitalWrite(LOCK, HIGH);
+    Serial.println(digitalRead(LOCK));
+    delay(2000);
+    digitalWrite(LOCK, LOW);
+    Serial.println(digitalRead(LOCK));
+  }
+
+  delay(1000);
+}
