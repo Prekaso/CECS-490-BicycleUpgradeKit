@@ -1,2 +1,2 @@
-# CECS490-BicylcleUpgradeKit
+# CECS-490-BicycleUpgradeKit
 Senior Design Project 
